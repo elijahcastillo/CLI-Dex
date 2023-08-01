@@ -15,13 +15,13 @@ void FileHandler::saveToFile(std::shared_ptr<Collection> root, const std::string
     std::function<void(const std::shared_ptr<TodoItem>&)> saveItem = [&](const std::shared_ptr<TodoItem>& item) {
         if (item->getType() == TodoItem::ClassType::Collection) {
             auto collection = std::static_pointer_cast<Collection>(item);
-            file << "Collection," << collection->getData() << "," << collection->getParentId() << "," << collection->getId() << "\n";
+            file << "Collection," << collection->getData() << "," << collection->getParentId() << "," << collection->getId() << "," << item->getIsCompleted() << "\n";
 
             for (const auto& subItem : collection->getItems()) {
                 saveItem(subItem); // Recursively call saveItem for each sub-collection or entry
             }
         } else {
-            file << "Entry," << item->getData() << "," << item->getParentId() << "," << "-1" << "\n";
+            file << "Entry," << item->getData() << "," << item->getParentId() << "," << "-1"  << "," << item->getIsCompleted() << "\n";
         }
     };
 
@@ -46,18 +46,30 @@ std::shared_ptr<Collection> FileHandler::readFromFile(const std::string& filenam
     std::string line;
     while (std::getline(file, line)) {
         std::istringstream iss(line);
-        std::string type, dataStr, parentIdStr, itemIdStr;
-        int parentId, itemId;
+        std::string type, dataStr, parentIdStr, itemIdStr, isCompletedStr;
+        int parentId, itemId, isCompleted;
 
         // Read comma-separated values from the line
         std::getline(iss, type, ',');
         std::getline(iss, dataStr, ',');
         std::getline(iss, parentIdStr, ',');
         std::getline(iss, itemIdStr, ',');
+        std::getline(iss, isCompletedStr, ',');
+
+
 
         // Convert string values to integers
-        parentId = std::stoi(parentIdStr);
-        itemId = (type == "Collection") ? std::stoi(itemIdStr) : -1;
+        try {
+            // This code may throw an exception
+            parentId = std::stoi(parentIdStr);
+            itemId = (type == "Collection") ? std::stoi(itemIdStr) : -1;
+            isCompleted = (isCompletedStr == "1") ? true : false; //When bool is converted to string it is "1" or "0"
+
+        } catch (const std::exception& e) {
+        // This code will be executed if an exception is thrown
+        std::cerr << "An exception was thrown: " << e.what() << std::endl;
+        } 
+
 
         // Create TodoItem based on the type
         if (collectionMap.find(parentId) == collectionMap.end()) {
@@ -71,7 +83,7 @@ std::shared_ptr<Collection> FileHandler::readFromFile(const std::string& filenam
 
         if (itemId == -1) {
             // Create an Entry
-            auto entry = std::make_shared<Entry>(dataStr, parentId);
+            auto entry = std::make_shared<Entry>(dataStr, parentId, isCompleted);
             collectionMap[parentId]->getItems().push_back(entry);
         } else {
             // Create a Collection

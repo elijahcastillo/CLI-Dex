@@ -7,7 +7,7 @@
 class Entry : public TodoItem {
 
 public:
-    Entry(std::string data, int parentID) : TodoItem(data, ClassType::Entry, parentID) {};
+    Entry(std::string data, int parentID, bool isCompleted = false) : TodoItem(data, ClassType::Entry, parentID, isCompleted) {};
 
 };
 
