@@ -21,6 +21,39 @@
 #define CYAN "\033[36m"
 #define WHITE "\033[37m"
 
+#define BLACK "\033[30m"
+#define LIGHT_RED "\033[91m"
+#define LIGHT_GREEN "\033[92m"
+#define LIGHT_YELLOW "\033[93m"
+#define LIGHT_BLUE "\033[94m"
+#define LIGHT_MAGENTA "\033[95m"
+#define LIGHT_CYAN "\033[96m"
+#define LIGHT_WHITE "\033[97m"
+#define GRAY "\033[90m"
+#define DARK_GRAY "\033[90;1m" // A slightly brighter shade of gray
+
+// If you want bold versions of the existing colors
+#define BOLD_RED "\033[1;31m"
+#define BOLD_GREEN "\033[1;32m"
+#define BOLD_YELLOW "\033[1;33m"
+#define BOLD_BLUE "\033[1;34m"
+#define BOLD_MAGENTA "\033[1;35m"
+#define BOLD_CYAN "\033[1;36m"
+#define BOLD_WHITE "\033[1;37m"
+
+// If you want underline versions of the existing colors
+#define UNDERLINE_RED "\033[4;31m"
+#define UNDERLINE_GREEN "\033[4;32m"
+#define UNDERLINE_YELLOW "\033[4;33m"
+#define UNDERLINE_BLUE "\033[4;34m"
+#define UNDERLINE_MAGENTA "\033[4;35m"
+#define UNDERLINE_CYAN "\033[4;36m"
+#define UNDERLINE_WHITE "\033[4;37m"
+
+
+
+
+
 
 
 class InteractiveConsole {
@@ -38,7 +71,7 @@ public:
 
         int start_y = 7;
         gotoXY(12, start_y - 4);
-        std::cout << "===================================";
+        std::cout << BLUE << "===================================" << RESET;
         gotoXY(12, start_y - 3);
         std::cout << "   ";
         for (auto it = collection_path.rbegin(); it != collection_path.rend(); ++it) {
@@ -46,7 +79,8 @@ public:
         }
         std::cout << current_collection->getData();
         gotoXY(12, start_y - 2);
-        std::cout << "===================================";
+        std::cout << BLUE << "===================================" << RESET;
+
 
         
         for (size_t i = 0; i < current_collection->getItems().size(); ++i) {
@@ -80,23 +114,23 @@ public:
         // Display Options at the end of menu
         start_y++;
         gotoXY(12, start_y);
-        std::cout << "(N) Create New Entry";
+        std::cout << BLUE  << "(N)" << CYAN << " Create New Entry" << RESET;
 
         start_y++;
         gotoXY(12, start_y);
-        std::cout << "(C) Create New Collection";
+        std::cout  << BLUE << "(C)" << CYAN << " Create New Collection"<< RESET;
 
         start_y++;
         gotoXY(12, start_y);
-        std::cout << "(D) Delete Selected";
+        std::cout  << BLUE << "(D)"<< CYAN << " Delete Selected"<< RESET;
 
         start_y++;
         gotoXY(12, start_y);
-        std::cout << "(B) Go Back";
+        std::cout << BLUE << "(B)"<< CYAN <<" Go Back"<< RESET;
 
         start_y++;
         gotoXY(12, start_y);
-        std::cout << "(Q) Quit & Save";
+        std::cout  << BLUE << "(Q)"<< CYAN << " Quit & Save"<< RESET;
 
 
 
@@ -297,7 +331,7 @@ private:
 
         // Check for 'Q' key (81 in ASCII)
         if (GetKeyState(81) & 0x8000) {
-            FileHandler::saveToFile(root_collection, "main.csv");
+            FileHandler::saveToFile(root_collection, "CLI-Dex.csv");
             running = false;
             system("cls");
             return;
